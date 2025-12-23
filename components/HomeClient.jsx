@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { CldImage } from "next-cloudinary";
 import TestimonialsCarousel from "./Testimonials";
+import HomeCarousel from "./HomeCarousel";
 
 // --- Animation Variants ---
 const fadeInUp = {
@@ -109,7 +110,8 @@ export default function Hero() {
       </Head>
 
       {/* Hero Section */}
-      <HeroSection data={data.hero} />
+      {/* <HeroSection data={data.hero} /> */}
+      <HomeCarousel/>
 
       {/* Content Sections */}
       <HeroContents sections={data.sections} />

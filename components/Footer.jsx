@@ -5,7 +5,6 @@ import { useLanguage } from "@/components/LanguageProvider";
 import { memo, useMemo } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import {
@@ -17,14 +16,12 @@ import {
   MapPin,
 } from "lucide-react";
 
-// Constants for social media URLs
 const SOCIAL_LINKS = {
   INSTAGRAM: "https://instagram.com/bagworks",
   FACEBOOK: "https://facebook.com/bagworks",
   LINKEDIN: "https://linkedin.com/company/bagworks",
 };
 
-// Memoized components for better performance
 const FooterLink = memo(
   ({ href, label, external = false, prefetch = true }) => {
     const linkProps = external
@@ -243,14 +240,12 @@ export default function Footer() {
                 icon={Linkedin}
               />
             </div>
-                      <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
-              © {year} {footerData.brand.name}. {footerData.bottom.rights}
-            </p>
-            <p className="text-xs text-muted-foreground/70">
-              Registered in Bangladesh • VAT: 123456789
-            </p>
-          </div>
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                © {year} {footerData.brand.name}. {footerData.bottom.rights}
+              </p>
+              
+            </div>
           </div>
 
           {/* Company links only */}
@@ -284,6 +279,13 @@ export default function Footer() {
                     className="hover:text-foreground transition-colors duration-200 hover:underline"
                     aria-label="Call us"
                   >
+                    {footerData.contact.phoneRaw}
+                  </a>
+                  <a
+                    href={`tel:${footerData.contact.phoneRaw}`}
+                    className="hover:text-foreground transition-colors duration-200 hover:underline"
+                    aria-label="Call us"
+                  >
                     {footerData.contact.phone}
                   </a>
                 </div>
@@ -299,7 +301,6 @@ export default function Footer() {
                   </a>
                 </div>
               </address>
-              
             </div>
 
             {/* Optional: Business hours */}
@@ -313,8 +314,6 @@ export default function Footer() {
             </div>
           </div>
         </div>
-
-
       </div>
     </footer>
   );

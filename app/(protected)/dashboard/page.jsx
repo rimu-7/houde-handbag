@@ -11,9 +11,8 @@ export default async function DashboardPage() {
 
   return (
     <main className="p-6">
-      <UserInfo/>
-      <Table/>
-      <DashboardTable/>
+      <UserInfo />
+      <Table />
     </main>
   );
 }

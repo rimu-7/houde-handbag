@@ -99,13 +99,7 @@ export default function Navbar() {
             </Label>
           </div>
 
-          {/* Desktop CTA only */}
-          <Link
-            href="/inquiry"
-            className="hidden md:inline-flex items-center justify-center px-6 py-2 text-sm font-medium text-white bg-amber-800 rounded-full hover:bg-amber-900 transition-colors shadow-sm"
-          >
-            {lang === "en" ? "Get Quote" : "获取报价"}
-          </Link>
+          
 
           {/* Mobile Menu Button */}
           <button
@@ -181,37 +175,15 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Mobile CTA */}
-            <div className="mt-8">
-              <Link
-                href="/inquiry"
-                onClick={closeMenu}
-                className="w-full flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-amber-800 rounded-full hover:bg-amber-900 transition-colors shadow-sm"
-              >
-                {lang === "en" ? "Get Quote" : "获取报价"}
-                <svg
-                  className="ml-2 w-5 h-5 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
-              </Link>
-            </div>
+            
           </nav>
 
           <div className="shrink-0 p-6 border-t bg-gray-50">
             <div className="text-center text-sm text-gray-500">
               <p>
                 {lang === "en"
-                  ? "Premium Leather Goods Manufacturer"
-                  : "优质皮革制品制造商"}
+                  ? "Consistent quality, precision manufacturing, and scalable production systems ensure reliable handbags that build lasting business relationships."
+                  : "始终如一的品质、精密的制造工艺和可扩展的生产系统，确保了手袋的可靠性，从而建立持久的商业关系。"}
               </p>
               <p className="mt-2">© {new Date().getFullYear()} Houde Handbag</p>
             </div>
