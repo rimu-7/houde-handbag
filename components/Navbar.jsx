@@ -13,6 +13,7 @@ export default function Navbar() {
   const navItems = [
     { key: "home", en: "Home", zh: "首页", href: "/" },
     { key: "products", en: "Products", zh: "产品", href: "/products" },
+    { key: "gallery", en: "Gallery", zh: "画廊", href: "/gallery" },
     { key: "journey", en: "Journey", zh: "旅行", href: "/journey" },
     { key: "about", en: "About", zh: "关于", href: "/about" },
     { key: "contact", en: "Contact", zh: "联系我们", href: "/contact" },

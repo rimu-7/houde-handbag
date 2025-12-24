@@ -38,7 +38,7 @@ export const TESTIMONIALS = {
       rating: 5,
       tag: "Premium Finish",
       quote:
-        "The craftsmanship feels boutique-level. The leather grain selection and lining details were exactly what we needed for a high-end launch. Communication was clear, timelines were realistic, and the results exceeded expectations.",
+        "The craftsmanship feels boutique-level. The fabric                                                                                                                                                                                                                                                                                                                                                                                            grain selection and lining details were exactly what we needed for a high-end launch. Communication was clear, timelines were realistic, and the results exceeded expectations.",
       avatar:
         "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=80",
     },
@@ -323,7 +323,7 @@ export default function TestimonialsCarousel() {
                       {lang === "zh" ? "支持低起订量" : "Low MOQ options"}
                     </span>
                     <span className="whitespace-nowrap">
-                      {lang === "zh" ? "优质皮料供应" : "Premium leather sourcing"}
+                      {lang === "zh" ? "优质皮料供应" : "Premium sourcing"}
                     </span>
                     <span className="whitespace-nowrap">
                       {lang === "zh" ? "严格质检流程" : "Strict QC checkpoints"}

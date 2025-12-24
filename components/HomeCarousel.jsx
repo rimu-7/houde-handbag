@@ -12,7 +12,7 @@ const getCarouselData = (dict) => {
   return [
     {
       id: 1,
-      url: "https://images.pexels.com/photos/3178938/pexels-photo-3178938.jpeg",
+      url: "https://m.media-amazon.com/images/I/713rpoSFkEL._AC_SY879_.jpg",
       tag: c.slide1?.tag,
       title: c.slide1?.title,
       subtitle: c.slide1?.subtitle,

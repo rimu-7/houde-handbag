@@ -111,7 +111,7 @@ export default function Hero() {
 
       {/* Hero Section */}
       {/* <HeroSection data={data.hero} /> */}
-      <HomeCarousel/>
+      <HomeCarousel />
 
       {/* Content Sections */}
       <HeroContents sections={data.sections} />
@@ -120,7 +120,7 @@ export default function Hero() {
       <HeroAchievements data={data.achievements} />
 
       {/* Testimonials */}
-      <TestimonialsCarousel/>
+      <TestimonialsCarousel />
 
       {/* Product Categories Section */}
       <HeroProductCategory data={data.productCategories} />
@@ -216,12 +216,12 @@ const HeroContents = ({ sections }) => {
 
 // Helper component to handle individual section view logic
 const ContentSection = ({ section, index }) => {
-    const sectionRef = useRef(null);
-    const isSectionInView = useInView(sectionRef, { once: true, amount: 0.25 });
-    const isEven = index % 2 === 0;
-  
-    // --- Blur placeholder (no network request) ---
-    const shimmer = (w, h) => `
+  const sectionRef = useRef(null);
+  const isSectionInView = useInView(sectionRef, { once: true, amount: 0.25 });
+  const isEven = index % 2 === 0;
+
+  // --- Blur placeholder (no network request) ---
+  const shimmer = (w, h) => `
       <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="g">
@@ -235,114 +235,104 @@ const ContentSection = ({ section, index }) => {
         <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1.2s" repeatCount="indefinite" />
       </svg>
     `;
-  
-    const toBase64 = (str) => {
-      if (typeof window === "undefined") return Buffer.from(str).toString("base64");
-      return window.btoa(str);
-    };
-  
-    const shimmerDataUrl = (w, h) =>
-      `data:image/svg+xml;base64,${toBase64(shimmer(w, h))}`;
-  
-    // Cloudinary URL -> public_id
-    const cloudinaryPublicId = (src) => {
-      if (!src) return src;
-      if (!src.includes("/upload/")) return src;
-  
-      let after = src.split("/upload/")[1] || "";
-      after = after.split("?")[0];
-  
-      // handle transformations by cutting to version if exists
-      const vIndex = after.search(/v\d+\//);
-      if (vIndex >= 0) after = after.slice(vIndex);
-      after = after.replace(/^v\d+\//, "");
-      after = after.replace(/\.[a-z0-9]+$/i, "");
-  
-      return after;
-    };
-  
-    return (
-      <section
-        ref={sectionRef}
-        className={`py-12 sm:py-14 md:py-20 ${
-          !isEven ? "bg-gray-50" : "bg-white"
-        }`}
-      >
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
-          <div
-            className={`flex flex-col ${
-              !isEven ? "md:flex-row-reverse" : "md:flex-row"
-            } items-start md:items-center gap-8 sm:gap-10 md:gap-12`}
-          >
-            <AnimatePresence>
-              {isSectionInView && (
-                <>
-                  {/* TEXT */}
-                  <motion.div
-                    className="w-full md:w-1/2"
-                    initial="hidden"
-                    animate="visible"
-                    variants={isEven ? slideInFromLeft : slideInFromRight}
-                  >
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-5 md:mb-6 leading-tight">
-                      {section.title}
-                    </h2>
-  
-                    <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
-                      {section.description}
-                    </p>
-  
-                    <motion.button
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      className="mt-6 sm:mt-7 md:mt-8 inline-flex items-center justify-center border-2 border-amber-800 text-amber-800 hover:bg-amber-800 hover:text-white font-semibold py-2.5 px-6 sm:px-7 rounded-full transition-colors duration-300 w-full sm:w-auto"
-                    >
-                      {section.cta}
-                    </motion.button>
-                  </motion.div>
-  
-                  {/* IMAGE */}
-                  <motion.div
-                    className="w-full md:w-1/2"
-                    initial="hidden"
-                    animate="visible"
-                    variants={isEven ? slideInFromRight : slideInFromLeft}
-                  >
-                    <motion.div
-                      className="relative overflow-hidden rounded-2xl w-full
-                                 h-56 sm:h-72 md:h-96"
-                      whileHover={{ scale: 1.01 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <CldImage
-                        src={cloudinaryPublicId(homeImages.sectionImages[index])}
-                        alt={section.title}
-                        width={1200}
-                        height={800}
-                        className="w-full h-full object-cover"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        crop="fill"
-                        gravity="auto"
-                        quality="auto"
-                        format="auto"
-                        placeholder="blur"
-                        blurDataURL={shimmerDataUrl(1200, 800)}
-                        priority={index === 0}
-                      />
-  
-                      {/* subtle overlay for premium look */}
-                      {/* <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/10 via-transparent to-black/5" /> */}
-                    </motion.div>
-                  </motion.div>
-                </>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </section>
-    );
+
+  const toBase64 = (str) => {
+    if (typeof window === "undefined")
+      return Buffer.from(str).toString("base64");
+    return window.btoa(str);
   };
-  
+
+  const shimmerDataUrl = (w, h) =>
+    `data:image/svg+xml;base64,${toBase64(shimmer(w, h))}`;
+
+  // Cloudinary URL -> public_id
+  const cloudinaryPublicId = (src) => {
+    if (!src) return src;
+    if (!src.includes("/upload/")) return src;
+
+    let after = src.split("/upload/")[1] || "";
+    after = after.split("?")[0];
+
+    // handle transformations by cutting to version if exists
+    const vIndex = after.search(/v\d+\//);
+    if (vIndex >= 0) after = after.slice(vIndex);
+    after = after.replace(/^v\d+\//, "");
+    after = after.replace(/\.[a-z0-9]+$/i, "");
+
+    return after;
+  };
+
+  return (
+    <section
+      ref={sectionRef}
+      className={`py-12 sm:py-14 md:py-20 ${
+        !isEven ? "bg-gray-50" : "bg-white"
+      }`}
+    >
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
+        <div
+          className={`flex flex-col ${
+            !isEven ? "md:flex-row-reverse" : "md:flex-row"
+          } items-start md:items-center gap-8 sm:gap-10 md:gap-12`}
+        >
+          <AnimatePresence>
+            {isSectionInView && (
+              <>
+                {/* TEXT */}
+                <motion.div
+                  className="w-full md:w-1/2"
+                  initial="hidden"
+                  animate="visible"
+                  variants={isEven ? slideInFromLeft : slideInFromRight}
+                >
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-5 md:mb-6 leading-tight">
+                    {section.title}
+                  </h2>
+
+                  <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
+                    {section.description}
+                  </p>
+
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="mt-6 sm:mt-7 md:mt-8 inline-flex items-center justify-center border-2 border-amber-800 text-amber-800 hover:bg-amber-800 hover:text-white font-semibold py-2.5 px-6 sm:px-7 rounded-full transition-colors duration-300 w-full sm:w-auto"
+                  >
+                    {section.cta}
+                  </motion.button>
+                </motion.div>
+
+                {/* IMAGE - FIXED */}
+                <motion.div
+                  className="w-full md:w-1/2 hover:shadow-xl hover:shadow-amber-800 hover:rounded-b-2xl"
+                  initial="hidden"
+                  animate="visible"
+                  variants={isEven ? slideInFromRight : slideInFromLeft}
+                >
+                  <div className="relative pb-[75%] rounded-2xl overflow-hidden">
+                    {" "}
+                    <CldImage
+                      src={cloudinaryPublicId(homeImages.sectionImages[index])}
+                      alt={section.title}
+                      fill
+                      className="w-full h-full object-contain p-4"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      quality="auto"
+                      format="auto"
+                      placeholder="blur"
+                      blurDataURL={shimmerDataUrl(1200, 800)}
+                      priority={index === 0}
+                    />
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const HeroAchievements = ({ data }) => {
   const achievementsRef = useRef(null);
@@ -479,30 +469,29 @@ const HeroProductCategory = ({ data }) => {
               key={index}
               variants={scaleIn}
               whileHover={{ y: -10, transition: { duration: 0.2 } }}
-              className="group cursor-pointer"
+              className="group cursor-pointer text-center hover:shadow-xl hover:shadow-amber-800 hover:rounded-b-2xl"
             >
               <div className="relative overflow-hidden rounded-xl mb-4">
-                <CldImage
-                  src={homeImages.categoryImages[index]}
-                  alt={category.name}
-                  width={1200}
-                  height={800}
-                  className="w-full h-full object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  crop="fill"
-                  gravity="auto"
-                  quality="auto"
-                  format="auto"
-                  placeholder="blur"
-                  blurDataURL={shimmerDataUrl(1200, 800)}
-                  priority={index === 0}
-                />
-                {/* <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition duration-300"></div> */}
+                <div className="relative pb-[75%] rounded-2xl overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center p-4">
+                    <CldImage
+                      src={homeImages.categoryImages[index]}
+                      alt={category.name}
+                      fill
+                      className="!relative !w-auto !h-auto max-w-full max-h-full object-contain"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      quality="auto"
+                      format="auto"
+                      placeholder="blur"
+                      blurDataURL={shimmerDataUrl(1200, 800)}
+                      priority={index === 0}
+                    />
+                  </div>
+                </div>
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
                 {category.name}
               </h3>
-              {/* <p className="text-gray-600">{category.count}</p> */}
             </motion.div>
           ))}
         </motion.div>

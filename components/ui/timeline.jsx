@@ -62,7 +62,7 @@ export const Timeline = ({ data }) => {
 
   return (
     <div
-      className="w-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-black font-sans md:px-10"
+      className="w-full md:px-10"
       ref={containerRef}
     >
       <div className="max-w-7xl mx-auto py-20 px-4 md:px-8 lg:px-10">

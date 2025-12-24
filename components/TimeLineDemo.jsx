@@ -23,7 +23,7 @@ export default function TimelinePage() {
 
 
   return (
-    <div className="relative max-w-4xl mx-auto overflow-clip bg-white dark:bg-neutral-950">
+    <div className="relative max-w-4xl mx-auto overflow-clip ">
       <Timeline data={data} />
     </div>
   );

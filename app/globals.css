@@ -125,3 +125,18 @@
 }
 
 
+
+
+/* Masonry Grid Styles */
+.my-masonry-grid {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-left: -16px; /* Must match the pl-4 (1rem = 16px) in the component */
+  width: auto;
+}
+.my-masonry-grid_column {
+  padding-left: 16px; /* Gutter size */
+  background-clip: padding-box;
+}
+

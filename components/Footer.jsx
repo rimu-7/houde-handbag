@@ -68,7 +68,7 @@ const SocialButton = memo(({ href, label, icon: Icon }) => (
   <Button
     variant="outline"
     size="icon"
-    className="h-10 w-10 rounded-lg hover:scale-105 transition-transform duration-200 hover:border-primary"
+    className="h-10 w-10 rounded-lg hover:scale-105 transition-transform duration-200 hover:border-primary hover:text-primary"
     asChild
     aria-label={label}
   >
@@ -90,9 +90,9 @@ export function FooterSkeleton() {
   return (
     <footer className="border-t bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10">
           {/* Brand skeleton */}
-          <div className="md:col-span-5">
+          <div className="col-span-1 sm:col-span-2 lg:col-span-5">
             <Skeleton className="h-8 w-32 mb-4" />
             <Skeleton className="h-4 w-48 mb-2" />
             <Skeleton className="h-4 w-40" />
@@ -104,7 +104,7 @@ export function FooterSkeleton() {
           </div>
 
           {/* Links skeleton */}
-          <div className="md:col-span-3">
+          <div className="col-span-1 lg:col-span-3">
             <Skeleton className="h-6 w-24 mb-4" />
             <div className="space-y-3">
               {[...Array(4)].map((_, i) => (
@@ -114,7 +114,7 @@ export function FooterSkeleton() {
           </div>
 
           {/* Contact skeleton */}
-          <div className="md:col-span-4">
+          <div className="col-span-1 lg:col-span-4">
             <Skeleton className="h-6 w-20 mb-4" />
             <div className="space-y-3">
               <Skeleton className="h-4 w-32" />
@@ -131,11 +131,9 @@ export function FooterSkeleton() {
 export default function Footer() {
   const { dict, isLoading: languageLoading } = useLanguage();
 
-  // Safe dictionary access with fallbacks
   const f = dict?.footer || {};
   const year = useMemo(() => new Date().getFullYear(), []);
 
-  // Memoize footer data to prevent unnecessary re-renders
   const footerData = useMemo(
     () => ({
       brand: {
@@ -171,7 +169,6 @@ export default function Footer() {
     [f]
   );
 
-  // Company links only
   const companyLinks = useMemo(
     () => [
       { href: "/about", label: f?.cols?.company?.about || "About" },
@@ -182,7 +179,6 @@ export default function Footer() {
     [f]
   );
 
-  // Show skeleton while loading language data
   if (languageLoading) {
     return <FooterSkeleton />;
   }
@@ -194,21 +190,26 @@ export default function Footer() {
       aria-label="Website footer"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-        {/* Main footer content */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12">
-          {/* Brand section - Wider now */}
-          <div className="md:col-span-5 space-y-6">
+        {/* Grid Layout Breakdown:
+          - Mobile (default): 1 column
+          - Tablet (sm): 2 columns
+          - Desktop (lg): 12 columns
+        */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12">
+          
+          {/* Brand section: Full width on tablet, 5 cols on desktop */}
+          <div className="col-span-1 sm:col-span-2 lg:col-span-5 space-y-6">
             <div className="space-y-4">
               <Link
                 href="/"
                 className="inline-flex items-center gap-3 group"
                 aria-label="Go to homepage"
               >
-                <div className="h-12 w-12 rounded-xl border-2 flex items-center justify-center font-bold text-lg bg-primary/5 group-hover:bg-primary/10 transition-colors duration-200">
+                <div className="h-12 w-12 rounded-xl border-2 flex items-center justify-center font-bold text-lg bg-primary/5 group-hover:bg-primary/10 transition-colors duration-200 text-foreground">
                   {footerData.brand.logoText}
                 </div>
                 <div className="leading-tight">
-                  <p className="font-bold text-lg tracking-tight group-hover:text-primary transition-colors">
+                  <p className="font-bold text-lg tracking-tight group-hover:text-primary transition-colors text-foreground">
                     {footerData.brand.name}
                   </p>
                   <p className="text-sm text-muted-foreground">
@@ -222,7 +223,6 @@ export default function Footer() {
               </p>
             </div>
 
-            {/* Social media links */}
             <div className="flex items-center gap-2 pt-2">
               <SocialButton
                 href={footerData.social.instagram}
@@ -240,16 +240,16 @@ export default function Footer() {
                 icon={Linkedin}
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 hidden sm:block">
+               {/* Copyright visible on larger screens here, moved to bottom for mobile if needed */}
               <p className="text-sm text-muted-foreground">
                 © {year} {footerData.brand.name}. {footerData.bottom.rights}
               </p>
-              
             </div>
           </div>
 
-          {/* Company links only */}
-          <div className="md:col-span-3">
+          {/* Company links: 1 col on tablet, 3 cols on desktop */}
+          <div className="col-span-1 lg:col-span-3">
             <FooterCol title={f?.cols?.company?.title || "Company"}>
               {companyLinks.map((link) => (
                 <FooterLink key={link.href} {...link} />
@@ -257,44 +257,42 @@ export default function Footer() {
             </FooterCol>
           </div>
 
-          {/* Contact information - Wider now */}
-          <div className="md:col-span-4 space-y-6">
+          {/* Contact info: 1 col on tablet, 4 cols on desktop */}
+          <div className="col-span-1 lg:col-span-4 space-y-6">
             <div>
               <h3 className="text-sm font-semibold tracking-tight text-foreground mb-4">
                 {footerData.contact.title}
               </h3>
 
-              <address className="space-y-3 text-sm text-muted-foreground not-italic">
+              <address className="space-y-4 text-sm text-muted-foreground not-italic">
+                {/* Address */}
                 <div className="flex items-start gap-3">
-                  <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                  <MapPin className="h-4 w-4 mt-1 flex-shrink-0 text-primary" />
                   <span className="leading-relaxed">
                     {footerData.contact.address}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Phone className="h-4 w-4 flex-shrink-0" />
-                  <a
-                    href={`tel:${footerData.contact.phoneRaw}`}
-                    className="hover:text-foreground transition-colors duration-200 hover:underline"
-                    aria-label="Call us"
-                  >
-                    {footerData.contact.phoneRaw}
-                  </a>
-                  <a
-                    href={`tel:${footerData.contact.phoneRaw}`}
-                    className="hover:text-foreground transition-colors duration-200 hover:underline"
-                    aria-label="Call us"
-                  >
-                    {footerData.contact.phone}
-                  </a>
+                {/* Phone - Stacked for better mobile view */}
+                <div className="flex items-start gap-3">
+                  <Phone className="h-4 w-4 mt-1 flex-shrink-0 text-primary" />
+                  <div className="flex flex-col gap-1">
+                    <a
+                      href={`tel:${footerData.contact.phoneRaw}`}
+                      className="hover:text-foreground transition-colors duration-200 hover:underline block"
+                      aria-label="Call main line"
+                    >
+                      {footerData.contact.phone}
+                    </a>
+                  </div>
                 </div>
 
+                {/* Email */}
                 <div className="flex items-center gap-3">
-                  <Mail className="h-4 w-4 flex-shrink-0" />
+                  <Mail className="h-4 w-4 flex-shrink-0 text-primary" />
                   <a
                     href={`mailto:${footerData.contact.email}`}
-                    className="hover:text-foreground transition-colors duration-200 hover:underline"
+                    className="hover:text-foreground transition-colors duration-200 hover:underline break-all"
                     aria-label="Email us"
                   >
                     {footerData.contact.email}
@@ -303,16 +301,25 @@ export default function Footer() {
               </address>
             </div>
 
-            {/* Optional: Business hours */}
-            <div className="pt-2">
-              <p className="text-sm font-semibold mb-2">Business Hours</p>
+            {/* Business hours */}
+            <div className="pt-2 border-t sm:border-t-0 mt-4 sm:mt-0">
+              <p className="text-sm font-semibold mb-2 text-foreground">Business Hours</p>
               <div className="text-sm text-muted-foreground space-y-1">
-                <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
                 <p>Saturday: 10:00 AM - 4:00 PM</p>
                 <p>Sunday: Closed</p>
               </div>
             </div>
           </div>
+
+          {/* Mobile Copyright (Visible only on small screens at the bottom) */}
+           <div className="col-span-1 sm:hidden pt-4 border-t">
+              <p className="text-sm text-muted-foreground text-center">
+                © {year} {footerData.brand.name}.<br />
+                {footerData.bottom.rights}
+              </p>
+          </div>
+
         </div>
       </div>
     </footer>
