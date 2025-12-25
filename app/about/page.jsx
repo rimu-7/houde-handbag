@@ -164,7 +164,7 @@ export default function AboutPage() {
               <div className="relative h-full w-full flex items-center justify-center p-4">
                 <CldImage
                   src="https://res.cloudinary.com/drnascc38/image/upload/v1766143823/Picsart_25-12-19_19-29-08-105_cv6vbp.png"
-                  alt="About hero"
+                  alt="hero"
                   width={1600}
                   height={2200}
                   className="h-full w-full object-contain rounded-xl bg-white shadow-lg"
@@ -314,7 +314,7 @@ export default function AboutPage() {
                   <div className="absolute inset-0 p-3 sm:p-4">
                     <CldImage
                       src={c.image}
-                      alt={c.label}
+                      alt="about image"
                       width={1600}
                       height={2200}
                       className="h-full w-full object-contain bg-white rounded-xl"
