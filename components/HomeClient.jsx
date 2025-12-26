@@ -1,501 +1,475 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Head from "next/head";
-import {
-  motion,
-  useInView,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
-import { useLanguage } from "./LanguageProvider";
-import {
-  getCurrentYear,
-  homeData,
-  homeImages,
-} from "@/lib/dictionary/homeData";
+import { useMemo, useRef } from "react";
 import Link from "next/link";
+import { motion, useInView } from "framer-motion";
 import { CldImage } from "next-cloudinary";
-import TestimonialsCarousel from "./Testimonials";
-import HomeCarousel from "./HomeCarousel";
+import {
+  Factory,
+  Globe2,
+  ShieldCheck,
+  Timer,
+  ArrowRight,
+  TableProperties,
+} from "lucide-react";
 
-// --- Animation Variants ---
-const fadeInUp = {
-  hidden: { opacity: 0, y: 60 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  },
+import { useLanguage } from "@/components/LanguageProvider";
+import HomeCarousel from "@/components/HomeCarousel";
+import TestimonialsCarousel from "@/components/Testimonials";
+
+// your data
+import { homeData, homeImages } from "@/lib/dictionary/homeData";
+// reuse your about data for factory images + material list (still “your data”)
+import { content as aboutContent } from "@/lib/dictionary/aboutData";
+
+/* ---------------- helpers ---------------- */
+const shimmer = (w, h) => `
+<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g">
+      <stop stop-color="#f3f4f6" offset="0%" />
+      <stop stop-color="#e5e7eb" offset="50%" />
+      <stop stop-color="#f3f4f6" offset="100%" />
+    </linearGradient>
+  </defs>
+  <rect width="${w}" height="${h}" fill="#f3f4f6"/>
+  <rect id="r" width="${w}" height="${h}" fill="url(#g)"/>
+  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1.2s" repeatCount="indefinite" />
+</svg>
+`;
+
+const toBase64 = (str) => {
+  if (typeof window === "undefined") return Buffer.from(str).toString("base64");
+  return window.btoa(str);
 };
 
-const slideInFromLeft = {
-  hidden: { opacity: 0, x: -100 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.8,
-      ease: "easeOut",
-    },
-  },
-};
+const shimmerDataUrl = (w, h) =>
+  `data:image/svg+xml;base64,${toBase64(shimmer(w, h))}`;
 
-const slideInFromRight = {
-  hidden: { opacity: 0, x: 100 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.8,
-      ease: "easeOut",
-    },
-  },
-};
+// Cloudinary URL -> public_id (safe for next-cloudinary)
+function cloudinaryPublicId(src) {
+  if (!src) return src;
+  if (!src.includes("/upload/")) return src;
 
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.6,
-      ease: "backOut",
-    },
-  },
-};
+  let after = src.split("/upload/")[1] || "";
+  after = after.split("?")[0];
 
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.1,
-    },
-  },
-};
+  const vIndex = after.search(/v\d+\//);
+  if (vIndex >= 0) after = after.slice(vIndex);
+  after = after.replace(/^v\d+\//, "");
+  after = after.replace(/\.[a-z0-9]+$/i, "");
+  return after;
+}
 
-const itemAnimation = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-};
-
-// --- Main Component ---
-export default function Hero() {
-  const { lang } = useLanguage();
-  // Safe access to data in case lang is undefined or loading
-  const data = homeData[lang] || homeData["en"];
-
+/* ---------------- tiny building blocks ---------------- */
+function SectionHeading({ title, subtitle, center = true }) {
   return (
-    <div className="min-h-screen bg-white">
-      <Head>
-        <title>Exquisite Leather Goods | Luxury Bag Manufacturer</title>
-        <meta
-          name="description"
-          content="Handcrafted luxury leather bags and accessories, blending traditional craftsmanship with modern design"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      {/* Hero Section */}
-      {/* <HeroSection data={data.hero} /> */}
-      <HomeCarousel />
-
-      {/* Content Sections */}
-      <HeroContents sections={data.sections} />
-
-      {/* Achievements Section */}
-      <HeroAchievements data={data.achievements} />
-
-      {/* Testimonials */}
-      <TestimonialsCarousel />
-
-      {/* Product Categories Section */}
-      <HeroProductCategory data={data.productCategories} />
+    <div className={center ? "text-center" : ""}>
+      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
+        {title}
+      </h2>
+      {subtitle ? (
+        <p className="mt-3 text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
+          {subtitle}
+        </p>
+      ) : null}
     </div>
   );
 }
 
-// --- Sub-Components ---
-
-const HeroSection = ({ data }) => {
-  const heroRef = useRef(null);
-  const isHeroInView = useInView(heroRef, { once: true, amount: 0.3 });
-
-  // Scroll-based animations for Hero
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-
-  const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 1.1]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
+function StatCard({ title, value, unit }) {
   return (
-    <section className="relative h-screen overflow-hidden" ref={heroRef}>
-      <motion.div
-        className="absolute inset-0"
-        style={{ scale: heroScale, opacity: heroOpacity }}
-      >
-        <video
-          className="w-full h-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-        >
-          <source src={homeImages.heroVideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <div className="absolute inset-0 bg-black opacity-40"></div>
-      </motion.div>
-
-      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-        <AnimatePresence>
-          {isHeroInView && (
-            <>
-              <motion.h1
-                initial="hidden"
-                animate="visible"
-                variants={fadeInUp}
-                className="text-4xl md:text-7xl font-bold mb-6"
-              >
-                {data.title}
-              </motion.h1>
-              <motion.p
-                initial="hidden"
-                animate="visible"
-                variants={fadeInUp}
-                transition={{ delay: 0.2 }}
-                className="text-xl md:text-2xl max-w-3xl mb-8"
-              >
-                {data.subtitle}
-              </motion.p>
-              <Link href={"/products"}>
-                <motion.button
-                  initial="hidden"
-                  animate="visible"
-                  variants={fadeInUp}
-                  transition={{ delay: 0.4 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-amber-800 hover:bg-amber-900 text-white font-semibold py-3 px-8 rounded-full text-lg transition-colors duration-300"
-                >
-                  {data.cta}
-                </motion.button>
-              </Link>
-            </>
-          )}
-        </AnimatePresence>
+    <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 md:p-6 text-center hover:shadow-lg hover:scale-[1.01] transition">
+      <div className="text-3xl sm:text-4xl font-extrabold text-amber-800">
+        {value}
       </div>
-    </section>
-  );
-};
-
-const HeroContents = ({ sections }) => {
-  return (
-    <div>
-      {sections.map((section, index) => (
-        <ContentSection key={index} section={section} index={index} />
-      ))}
+      <div className="mt-2 text-sm sm:text-base font-semibold text-gray-900">
+        {title}
+      </div>
+      <div className="text-xs sm:text-sm text-gray-600">{unit}</div>
     </div>
   );
-};
+}
 
-// Helper component to handle individual section view logic
-const ContentSection = ({ section, index }) => {
-  const sectionRef = useRef(null);
-  const isSectionInView = useInView(sectionRef, { once: true, amount: 0.25 });
+/* ---------------- main ---------------- */
+export default function HomeClient() {
+  const { lang } = useLanguage();
+  const data = homeData?.[lang] ?? homeData.en;
+
+  const about = aboutContent?.[lang] ?? aboutContent.en;
+
+  const factoryImages = useMemo(() => {
+    const items = about?.sections?.facilities?.items || [];
+    const china = items.find((x) => /China|中国/i.test(x.label))?.image || null;
+    const vietnam =
+      items.find((x) => /Vietnam|越南/i.test(x.label))?.image || null;
+    return { china, vietnam };
+  }, [about]);
+
+  // Materials (non-leather positioning)
+  const nonLeatherBadges = useMemo(() => {
+    const list = about?.sections?.materials?.materialsUsed || [];
+    // keep it short & clean on home
+    return list.slice(0, 6);
+  }, [about]);
+
+  // Use about capability numbers (your provided real numbers) + add “2 factories”
+  const stats = useMemo(() => {
+    const caps = about?.sections?.capabilities?.items || [];
+    return [
+      {
+        title: lang === "en" ? "Factories" : "工厂",
+        value: "2",
+        unit: lang === "en" ? "China + Vietnam" : "中国 + 越南",
+      },
+      ...caps.map((x) => ({ title: x.title, value: x.value, unit: x.unit })),
+    ].slice(0, 4); // keep grid tidy
+  }, [about, lang]);
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* HERO (your carousel) */}
+      <HomeCarousel />
+
+      {/* Slim trust/position bar */}
+      <div className="border-b bg-amber-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-gray-800">
+              <Factory className="h-4 w-4 text-amber-800" />
+              {lang === "en"
+                ? "2 production companies: China + Vietnam"
+                : "两大生产基地：中国 + 越南"}
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-gray-800">
+              <Globe2 className="h-4 w-4 text-amber-800" />
+              {lang === "en" ? "OEM/ODM • Global supply" : "OEM/ODM • 全球供货"}
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-gray-800">
+              <ShieldCheck className="h-4 w-4 text-amber-800" />
+              {lang === "en"
+                ? "Internal testing + stable QC"
+                : "内部测试 + 稳定质控"}
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-gray-800">
+              <Timer className="h-4 w-4 text-amber-800" />
+              {lang === "en" ? "Fast sampling" : "快速打样"}
+            </span>
+          </div>
+
+          {/* Non-leather note */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-xs font-semibold text-gray-800">
+              <TableProperties className="h-4 w-4 text-amber-800" />
+              {lang === "en" ? "Non-leather materials:" : "非皮革材料："}
+            </span>
+            {nonLeatherBadges.map((m) => (
+              <span
+                key={m}
+                className="rounded-full bg-white border border px-2.5 py-1 text-xs font-semibold text-gray-800"
+              >
+                {m}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* CONTENT SECTIONS (your 3 sections + images) */}
+      <div>
+        {(data.sections || []).map((section, index) => (
+          <ContentSection key={index} section={section} index={index} />
+        ))}
+      </div>
+
+      {/* TWO FACTORIES (polished + clear) */}
+      <TwoFactories
+        lang={lang}
+        chinaImg={factoryImages.china}
+        vietnamImg={factoryImages.vietnam}
+      />
+
+      {/* STATS (using your capabilities numbers + factories) */}
+      <section className="py-12 md:py-16 lg:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            title={
+              about?.sections?.capabilities?.title ||
+              (lang === "en" ? "Manufacturing Strength" : "制造实力")
+            }
+            subtitle={
+              about?.sections?.capabilities?.subtitle ||
+              (lang === "en"
+                ? "Stable capacity. Clear systems. Proven results."
+                : "稳定产能 • 清晰系统 • 数据验证")
+            }
+          />
+          <div className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
+            {stats.map((s, i) => (
+              <StatCard key={i} {...s} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS (your component) */}
+      <TestimonialsCarousel />
+
+      {/* PRODUCT CATEGORIES (your section) */}
+      <ProductCategories lang={lang} data={data.productCategories} />
+
+      {/* CTA */}
+      <section className="py-12 md:py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 p-6 md:p-10 lg:p-12 text-white overflow-hidden relative">
+            <div className="relative z-10 flex flex-col md:flex-row gap-6 md:items-center md:justify-between">
+              <div className="max-w-2xl">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+                  {lang === "en"
+                    ? "Ready to build your next bag line?"
+                    : "准备好打造您的下一条产品线了吗？"}
+                </h3>
+                <p className="mt-3 text-amber-100 text-sm sm:text-base md:text-lg">
+                  {lang === "en"
+                    ? "Share your requirements—we’ll support sampling, testing, and stable bulk production across China & Vietnam."
+                    : "提交您的需求，我们将支持打样、测试与稳定量产（中国 + 越南双基地）。"}
+                </p>
+              </div>
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-amber-800 px-6 sm:px-8 py-3 sm:py-4 font-semibold hover:bg-amber-50 transition w-full md:w-auto"
+              >
+                {lang === "en" ? "Start Your Project" : "开始合作"}
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            </div>
+
+            <div className="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+            <div className="absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/* ---------------- sections ---------------- */
+
+function ContentSection({ section, index }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.22 });
   const isEven = index % 2 === 0;
-
-  // --- Blur placeholder (no network request) ---
-  const shimmer = (w, h) => `
-      <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="g">
-            <stop stop-color="#f3f4f6" offset="0%" />
-            <stop stop-color="#e5e7eb" offset="50%" />
-            <stop stop-color="#f3f4f6" offset="100%" />
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="#f3f4f6"/>
-        <rect id="r" width="${w}" height="${h}" fill="url(#g)"/>
-        <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1.2s" repeatCount="indefinite" />
-      </svg>
-    `;
-
-  const toBase64 = (str) => {
-    if (typeof window === "undefined")
-      return Buffer.from(str).toString("base64");
-    return window.btoa(str);
-  };
-
-  const shimmerDataUrl = (w, h) =>
-    `data:image/svg+xml;base64,${toBase64(shimmer(w, h))}`;
-
-  // Cloudinary URL -> public_id
-  const cloudinaryPublicId = (src) => {
-    if (!src) return src;
-    if (!src.includes("/upload/")) return src;
-
-    let after = src.split("/upload/")[1] || "";
-    after = after.split("?")[0];
-
-    // handle transformations by cutting to version if exists
-    const vIndex = after.search(/v\d+\//);
-    if (vIndex >= 0) after = after.slice(vIndex);
-    after = after.replace(/^v\d+\//, "");
-    after = after.replace(/\.[a-z0-9]+$/i, "");
-
-    return after;
-  };
 
   return (
     <section
-      ref={sectionRef}
+      ref={ref}
       className={`py-12 sm:py-14 md:py-20 ${
-        !isEven ? "bg-gray-50" : "bg-white"
+        isEven ? "bg-white" : "bg-gray-50"
       }`}
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div
           className={`flex flex-col ${
-            !isEven ? "md:flex-row-reverse" : "md:flex-row"
+            isEven ? "md:flex-row" : "md:flex-row-reverse"
           } items-start md:items-center gap-8 sm:gap-10 md:gap-12`}
         >
-          <AnimatePresence>
-            {isSectionInView && (
-              <>
-                {/* TEXT */}
-                <motion.div
-                  className="w-full md:w-1/2"
-                  initial="hidden"
-                  animate="visible"
-                  variants={isEven ? slideInFromLeft : slideInFromRight}
-                >
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-5 md:mb-6 leading-tight">
-                    {section.title}
-                  </h2>
+          {/* Text */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="w-full md:w-1/2"
+          >
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+              {section.title}
+            </h3>
+            <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
+              {section.description}
+            </p>
 
-                  <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
-                    {section.description}
-                  </p>
+            <Link
+              href="/business"
+              className="mt-6 inline-flex items-center justify-center gap-2 rounded-full border-2 border-amber-800 text-amber-800 hover:bg-amber-800 hover:text-white font-semibold py-2.5 px-6 sm:px-7 transition w-full sm:w-auto"
+            >
+              {section.cta}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
 
-                  <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="mt-6 sm:mt-7 md:mt-8 inline-flex items-center justify-center border-2 border-amber-800 text-amber-800 hover:bg-amber-800 hover:text-white font-semibold py-2.5 px-6 sm:px-7 rounded-full transition-colors duration-300 w-full sm:w-auto"
-                  >
-                    {section.cta}
-                  </motion.button>
-                </motion.div>
-
-                {/* IMAGE - FIXED */}
-                <motion.div
-                  className="w-full md:w-1/2 hover:shadow-xl hover:shadow-amber-800 hover:rounded-b-2xl"
-                  initial="hidden"
-                  animate="visible"
-                  variants={isEven ? slideInFromRight : slideInFromLeft}
-                >
-                  <div className="relative pb-[75%] rounded-2xl overflow-hidden">
-                    {" "}
-                    <CldImage
-                      src={cloudinaryPublicId(homeImages.sectionImages[index])}
-                      alt={section.title}
-                      fill
-                      className="w-full h-full object-contain p-4"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      quality="auto"
-                      format="auto"
-                      placeholder="blur"
-                      blurDataURL={shimmerDataUrl(1200, 800)}
-                      priority={index === 0}
-                    />
-                  </div>
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
+          {/* Image */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.06 }}
+            className="w-full md:w-1/2"
+          >
+            <div className="relative rounded-2xl overflow-hidden border bg-white shadow-sm hover:shadow-xl transition">
+              <div className="relative pb-[72%]">
+                <CldImage
+                  src={cloudinaryPublicId(homeImages.sectionImages[index])}
+                  alt={section.title}
+                  fill
+                  className="object-contain p-4"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality="auto"
+                  format="auto"
+                  placeholder="blur"
+                  blurDataURL={shimmerDataUrl(1200, 800)}
+                  priority={index === 0}
+                />
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
   );
-};
+}
 
-const HeroAchievements = ({ data }) => {
-  const achievementsRef = useRef(null);
-  const isAchievementsInView = useInView(achievementsRef, {
-    once: true,
-    amount: 0.3,
-  });
+function TwoFactories({ lang, chinaImg, vietnamImg }) {
+  const title = lang === "en" ? "Two Production Companies" : "两大生产基地";
+  const subtitle =
+    lang === "en"
+      ? "China + Vietnam factories for flexible capacity, risk diversification, and stable delivery."
+      : "中国 + 越南双基地：更灵活的产能、更稳定的交付与更好的供应风险分散。";
 
-  const [yearsCount, setYearsCount] = useState(0);
-  const [countriesCount, setCountriesCount] = useState(0);
-  const [productsCount, setProductsCount] = useState(0);
-
-  useEffect(() => {
-    if (isAchievementsInView) {
-      // Helper to animate numbers
-      const animateValue = (setFn, end, duration) => {
-        let startTimestamp = null;
-        const step = (timestamp) => {
-          if (!startTimestamp) startTimestamp = timestamp;
-          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-          setFn(Math.floor(progress * end));
-          if (progress < 1) {
-            window.requestAnimationFrame(step);
-          }
-        };
-        window.requestAnimationFrame(step);
-      };
-
-      animateValue(setYearsCount, 500, 2000);
-      animateValue(setCountriesCount, 50, 1500);
-      animateValue(setProductsCount, 1000, 2500);
-    }
-  }, [isAchievementsInView]);
+  const cards = [
+    {
+      key: "china",
+      name: lang === "en" ? "China Factory" : "中国工厂",
+      desc:
+        lang === "en"
+          ? "Sampling, development, and stable workshop execution with clear data systems."
+          : "打样开发 + 车间执行稳定，数据系统清晰可追踪。",
+      img: chinaImg,
+    },
+    {
+      key: "vietnam",
+      name: lang === "en" ? "Vietnam Factory" : "越南工厂",
+      desc:
+        lang === "en"
+          ? "Flexible production planning and global partner support for consistent output."
+          : "生产计划更灵活，支持全球客户稳定量产交付。",
+      img: vietnamImg,
+    },
+  ];
 
   return (
-    <section className="py-20 bg-amber-900 text-white" ref={achievementsRef}>
-      <div className="max-w-6xl mx-auto px-4 text-center">
-        <motion.h2
-          initial="hidden"
-          animate={isAchievementsInView ? "visible" : "hidden"}
-          variants={fadeInUp}
-          className="text-4xl font-bold mb-12"
-        >
-          {data.title}
-        </motion.h2>
-        <motion.div
-          initial="hidden"
-          animate={isAchievementsInView ? "visible" : "hidden"}
-          variants={staggerContainer}
-          className="grid grid-cols-1 md:grid-cols-3 gap-12"
-        >
-          {data.stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              variants={itemAnimation}
-              className="space-y-4"
+    <section className="py-12 md:py-16 lg:py-20 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHeading title={title} subtitle={subtitle} />
+
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+          {cards.map((c) => (
+            <div
+              key={c.key}
+              className="rounded-2xl border bg-white overflow-hidden shadow-sm hover:shadow-xl transition"
             >
-              <div className="text-6xl font-bold">
-                {index === 0 && yearsCount.toLocaleString()}
-                {index === 1 && countriesCount.toLocaleString()}
-                {index === 2 && productsCount.toLocaleString()}
-                {/* Fallback if logic index doesn't match */}
-                {/* You might want to map these explicitly based on your data structure */}
-              </div>
-              <p className="text-xl">{stat.label}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-const HeroProductCategory = ({ data }) => {
-  const categoryRef = useRef(null);
-  const isCategoryInView = useInView(categoryRef, { once: true, amount: 0.3 });
-
-  // --- Blur placeholder (no network request) ---
-  const shimmer = (w, h) => `
-    <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <linearGradient id="g">
-        <stop stop-color="#f3f4f6" offset="0%" />
-        <stop stop-color="#e5e7eb" offset="50%" />
-        <stop stop-color="#f3f4f6" offset="100%" />
-        </linearGradient>
-    </defs>
-    <rect width="${w}" height="${h}" fill="#f3f4f6"/>
-    <rect id="r" width="${w}" height="${h}" fill="url(#g)"/>
-    <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1.2s" repeatCount="indefinite" />
-    </svg>
-    `;
-
-  const toBase64 = (str) => {
-    // client-safe base64
-    if (typeof window === "undefined")
-      return Buffer.from(str).toString("base64");
-    return window.btoa(str);
-  };
-
-  const shimmerDataUrl = (w, h) =>
-    `data:image/svg+xml;base64,${toBase64(shimmer(w, h))}`;
-
-  // Optional: if your src is a Cloudinary URL, convert it to publicId so transformations work reliably
-  const cloudinaryPublicId = (src) => {
-    if (!src) return src;
-    if (!src.includes("/upload/")) return src; // already public_id
-    let after = src.split("/upload/")[1];
-    after = after.replace(/^v\d+\//, ""); // remove version
-    after = after.split("?")[0]; // remove query
-    after = after.replace(/\.[a-z0-9]+$/i, ""); // remove extension
-    return after;
-  };
-
-  return (
-    <section className="py-20 bg-white" ref={categoryRef}>
-      <div className="max-w-6xl mx-auto px-4">
-        <motion.h2
-          initial="hidden"
-          animate={isCategoryInView ? "visible" : "hidden"}
-          variants={fadeInUp}
-          className="text-4xl font-bold text-center text-gray-800 mb-16"
-        >
-          {data.title}
-        </motion.h2>
-        <motion.div
-          initial="hidden"
-          animate={isCategoryInView ? "visible" : "hidden"}
-          variants={staggerContainer}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-        >
-          {data.categories.map((category, index) => (
-            <motion.div
-              key={index}
-              variants={scaleIn}
-              whileHover={{ y: -10, transition: { duration: 0.2 } }}
-              className="group cursor-pointer text-center hover:shadow-xl hover:shadow-amber-800 hover:rounded-b-2xl"
-            >
-              <div className="relative overflow-hidden rounded-xl mb-4">
-                <div className="relative pb-[75%] rounded-2xl overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center p-4">
-                    <CldImage
-                      src={homeImages.categoryImages[index]}
-                      alt={category.name}
-                      fill
-                      className="!relative !w-auto !h-auto max-w-full max-h-full object-contain"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      quality="auto"
-                      format="auto"
-                      placeholder="blur"
-                      blurDataURL={shimmerDataUrl(1200, 800)}
-                      priority={index === 0}
-                    />
+              <div className="relative aspect-[16/9] bg-gray-100">
+                {c.img ? (
+                  <CldImage
+                    src={cloudinaryPublicId(c.img)}
+                    alt={c.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    quality="auto"
+                    format="auto"
+                    placeholder="blur"
+                    blurDataURL={shimmerDataUrl(1200, 800)}
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Factory className="h-10 w-10 text-amber-800" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
+                <div className="absolute bottom-3 left-3 right-3">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-gray-900">
+                    <Factory className="h-4 w-4 text-amber-800" />
+                    {c.name}
                   </div>
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                {category.name}
-              </h3>
-            </motion.div>
+
+              <div className="p-5 sm:p-6">
+                <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                  {c.desc}
+                </p>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <span className="rounded-full bg-amber-50 border border-amber-100 px-3 py-1 text-xs font-semibold text-gray-800">
+                    {lang === "en" ? "OEM/ODM" : "OEM/ODM"}
+                  </span>
+                  <span className="rounded-full bg-amber-50 border border-amber-100 px-3 py-1 text-xs font-semibold text-gray-800">
+                    {lang === "en" ? "Stable QC" : "稳定质控"}
+                  </span>
+                  <span className="rounded-full bg-amber-50 border border-amber-100 px-3 py-1 text-xs font-semibold text-gray-800">
+                    {lang === "en" ? "Fast sampling" : "快速打样"}
+                  </span>
+                </div>
+              </div>
+            </div>
           ))}
-        </motion.div>
+        </div>
+
+        <div className="mt-8 text-center">
+          <Link
+            href="/about"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-amber-700 hover:bg-amber-800 text-white px-7 py-3 font-semibold transition"
+          >
+            {lang === "en"
+              ? "Learn more about our factories"
+              : "了解更多工厂信息"}
+            <ArrowRight className="h-5 w-5" />
+          </Link>
+        </div>
       </div>
     </section>
   );
-};
+}
+
+function ProductCategories({ lang, data }) {
+  if (!data) return null;
+
+  return (
+    <section className="py-12 md:py-16 lg:py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHeading
+          title={data.title}
+          subtitle={
+            lang === "en" ? "Explore series & styles" : "浏览系列与款式"
+          }
+        />
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          {data.categories.map((category, index) => (
+            <div
+              key={index}
+              className="group rounded-2xl border bg-white overflow-hidden shadow-sm hover:shadow-xl transition"
+            >
+              <div className="relative aspect-[4/3] bg-gray-50">
+                <CldImage
+                  src={cloudinaryPublicId(homeImages.categoryImages[index])}
+                  alt={category.name}
+                  fill
+                  className="object-contain p-4 group-hover:scale-[1.02] transition-transform"
+                  sizes="(max-width: 768px) 100vw, 25vw"
+                  quality="auto"
+                  format="auto"
+                  placeholder="blur"
+                  blurDataURL={shimmerDataUrl(1200, 800)}
+                />
+              </div>
+              <div className="p-4">
+                <p className="font-semibold text-gray-900">{category.name}</p>
+                {category.count ? (
+                  <p className="text-sm text-gray-600 mt-1">{category.count}</p>
+                ) : null}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

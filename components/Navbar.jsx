@@ -43,9 +43,9 @@ export default function Navbar() {
             className="flex items-center gap-2 min-w-0"
             onClick={closeMenu}
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-800">
+            {/* <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-800">
               <span className="text-white font-bold text-sm">logo</span>
-            </div>
+            </div> */}
 
             {/* ✅ Hide brand text on small screens */}
             <div className="hidden sm:flex flex-col min-w-0">

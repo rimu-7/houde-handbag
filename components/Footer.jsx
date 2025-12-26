@@ -205,9 +205,9 @@ export default function Footer() {
                 className="inline-flex items-center gap-3 group"
                 aria-label="Go to homepage"
               >
-                <div className="h-12 w-12 rounded-xl border-2 flex items-center justify-center font-bold text-lg bg-primary/5 group-hover:bg-primary/10 transition-colors duration-200 text-foreground">
+                {/* <div className="h-12 w-12 rounded-xl border-2 flex items-center justify-center font-bold text-lg bg-primary/5 group-hover:bg-primary/10 transition-colors duration-200 text-foreground">
                   {footerData.brand.logoText}
-                </div>
+                </div> */}
                 <div className="leading-tight">
                   <p className="font-bold text-lg tracking-tight group-hover:text-primary transition-colors text-foreground">
                     {footerData.brand.name}
