@@ -8,7 +8,7 @@ import { content } from "@/lib/dictionary/aboutData";
 // Import your components
 import AboutPage from "./page copy";
 import TwoFactories from "./TwoFactories";
-import BagFactoriesMachinery from "../ok/page";
+import BagFactoriesMachinery from "./BagFactoriesMachinery";
 import WhyUsSection from "./Whyus";
 import FAQSection from "./FAQSection";
 import CatalogSection from "./CatalogSection";
