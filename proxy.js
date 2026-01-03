@@ -4,6 +4,7 @@ export default function middleware(request) {
   const allowedOrigins = [
     "https://alpha-stack-log-coil.vercel.app",
     "http://localhost:3000",
+    "http://localhost:3001",
   ];
 
   const origin = request.headers.get("origin");
