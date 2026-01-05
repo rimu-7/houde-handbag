@@ -190,7 +190,7 @@ export default function Footer() {
           {/* Col 1: Brand Identity (Spans 4 cols on Desktop) */}
           <div className="lg:col-span-4 space-y-6">
             <Link href="/" className="inline-block group">
-              <span className="block text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+              <span className="block text-xl hover:text-amber-800 duration-300 font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
                 {data.brand.name}
               </span>
               <span className="text-xs uppercase tracking-widest text-muted-foreground font-medium">

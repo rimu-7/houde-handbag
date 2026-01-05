@@ -42,10 +42,13 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white h-16">
       <div className="container mx-auto flex h-full items-center justify-between px-4 md:px-8">
-        
         {/* --- Logo --- */}
-        <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex flex-col z-50">
-          <span className="font-bold text-lg tracking-tight text-gray-900">
+        <Link
+          href="/"
+          onClick={() => setIsMenuOpen(false)}
+          className="flex flex-col z-50"
+        >
+          <span className="font-bold text-lg hover:text-amber-700 hover:scale-110 duration-300 tracking-tight text-gray-900">
             HOUDE HANDBAG
           </span>
           <span className="text-[10px] uppercase tracking-widest text-gray-500">
@@ -61,8 +64,10 @@ export default function Navbar() {
               <Link
                 key={item.key}
                 href={item.href}
-                className={`text-sm font-medium hover:text-amber-800 ${
-                  isActive ? "text-amber-800" : "text-gray-600"
+                className={`text-sm font-medium  ${
+                  isActive
+                    ? "text-white bg-amber-800 px-2 py-1 rounded-2xl"
+                    : "text-gray-600 hover:text-amber-800"
                 }`}
               >
                 {lang === "en" ? item.en : item.zh}
@@ -75,7 +80,11 @@ export default function Navbar() {
         <div className="flex items-center gap-4 z-50">
           {/* Language Switcher */}
           <div className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full">
-            <span className={`text-[10px] font-bold ${lang === "zh" ? "text-amber-800" : "text-gray-400"}`}>
+            <span
+              className={`text-[10px] font-bold ${
+                lang === "zh" ? "text-amber-800" : "text-gray-400"
+              }`}
+            >
               中
             </span>
             <Switch
@@ -83,7 +92,11 @@ export default function Navbar() {
               onCheckedChange={toggleLang}
               className="data-[state=checked]:bg-amber-800 scale-75"
             />
-            <span className={`text-[10px] font-bold ${lang === "en" ? "text-amber-800" : "text-gray-400"}`}>
+            <span
+              className={`text-[10px] font-bold ${
+                lang === "en" ? "text-amber-800" : "text-gray-400"
+              }`}
+            >
               EN
             </span>
           </div>

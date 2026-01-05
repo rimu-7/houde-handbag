@@ -127,10 +127,8 @@ function GalleryItem({ item }) {
   return (
     // 1. Outer wrapper: No fixed aspect ratio here so it can hold the bottom text on mobile
     <div className="group relative w-full">
-      
       {/* 2. Image Wrapper: This holds the Aspect Ratio and the Image */}
       <div className="relative aspect-3/4 w-full overflow-hidden rounded-t-2xl md:rounded-2xl bg-gray-100 dark:bg-gray-900 shadow-sm transition-all hover:shadow-lg">
-        
         {/* Loading Skeleton */}
         {isLoading && (
           <Skeleton className="absolute inset-0 z-10 h-full w-full" />
@@ -150,17 +148,14 @@ function GalleryItem({ item }) {
           onLoad={() => setIsLoading(false)}
         />
 
-        <div className="hidden md:block absolute inset-0">
-          <div className="h-full w-full translate-y-[10px] opacity-0 hover:bg-black/20 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 flex justify-center items-center">
-             <span className="bg-white px-3 py-2 rounded-lg border-2 border-black text-lg font-bold shadow-md">
-                {item.category}
-             </span>
-          </div>
+
+        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col gap-2 items-center justify-center backdrop-blur-[2px]">
+          <span className="text-white font-medium text-lg tracking-wide border border-white/20 bg-white/10 px-4 py-2 rounded-full">
+            {item.category}
+          </span>
         </div>
       </div>
 
-      {/* --- MOBILE VIEW (Small screens only) --- */}
-      {/* Shows outside the image, solid white background */}
       <div className="block md:hidden ">
         <div className="w-full bg-white dark:bg-zinc-900 rounded-b-2xl border border-gray-200 dark:border-zinc-800 p-3 text-center shadow-sm">
           <p className="text-sm font-bold uppercase tracking-wider text-black dark:text-white">
@@ -168,7 +163,6 @@ function GalleryItem({ item }) {
           </p>
         </div>
       </div>
-
     </div>
   );
 }
