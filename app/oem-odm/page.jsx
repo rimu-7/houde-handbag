@@ -245,7 +245,7 @@ const polishedImages = {
         en: "Slim protective sleeve or bag for tablets, often padded for safety.",
         zh: "纤薄保护套或包，专为平板电脑设计，通常带衬垫。",
       },
-      url: "https://res.cloudinary.com/drnascc38/image/upload/v1767018046/c01a5165-0543-4a49-8c5b-c49ad504afb6.png",
+      url: "https://res.cloudinary.com/drnascc38/image/upload/v1767512590/ee304f9f-d8fd-40aa-86c2-de30246c8647.png",
     },
     {
       id: 89,

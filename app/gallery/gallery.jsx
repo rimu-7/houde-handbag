@@ -1,3 +1,4 @@
+import { url } from "zod";
 import { MasonryShuffleGallery } from "./MasonryShuffleGallery";
 
 const galleryData = [
@@ -119,7 +120,7 @@ const galleryData = [
   {
     id: 24,
     name: "Laptop Bag",
-    url: "https://images.unsplash.com/photo-1763034179057-acad3a072568?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGxhcHRvcCUyMGJhZ3xlbnwwfHwwfHx8MA%3D%3D",
+    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767512482/0ccbee55-faea-4843-ba8a-a6fa8ea63655.png",
   },
   {
     id: 25,
@@ -249,7 +250,7 @@ const galleryData = [
   {
     id: 50,
     name: "Makeup Bag",
-    url: "https://m.media-amazon.com/images/I/71-vkU6N+wL._SL1500_.jpg",
+    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767585741/5e226fb9-1e4e-49d6-865c-f2e48016fbc6.png",
   },
   {
     id: 51,
@@ -259,7 +260,7 @@ const galleryData = [
   {
     id: 52,
     name: "Makeup Bag",
-    url: "https://images.unsplash.com/photo-1632147341802-817aa47ae84b?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Njl8fG1ha2V1cCUyMGJhZ3xlbnwwfHwwfHx8MA%3D%3D",
+    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767585363/a0f1e171-e139-417f-8e9d-b55360e9e78f.png",
   },
   {
     id: 53,
@@ -449,22 +450,22 @@ const galleryData = [
   {
     id: 90,
     name: "Tablet Bag",
-    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767018046/c01a5165-0543-4a49-8c5b-c49ad504afb6.png",
+    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767585500/7ed8e4b1-132d-4927-a77e-e5858a2230fd.png",
   },
   {
     id: 91,
     name: "Tablet Bag",
-    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767018025/304f757a-4a2a-4ff1-97e2-d35d14b5b0f5.png",
+    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767585271/a1a1ca50-f762-4278-875b-088c3cd52e2e.png",
   },
   {
     id: 92,
     name: "Tablet Bag",
-    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767017912/ec05fbdf-7588-45ef-9f1e-c8c681f712f3.png",
+    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767512590/ee304f9f-d8fd-40aa-86c2-de30246c8647.png",
   },
   {
     id: 93,
     name: "Tablet Bag",
-    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767017851/9985bc26-b427-4702-a08e-434c8dd6ef84.png",
+    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767512730/d228f7ca-98cd-4c24-87e8-ab2662cb7a53.png",
   },
   {
     id: 94,
@@ -494,7 +495,7 @@ const galleryData = [
   {
     id: 99,
     name: "Tablet Bag",
-    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767017851/9985bc26-b427-4702-a08e-434c8dd6ef84.png",
+    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767017851/9985bc26-b427-4702-a08e-434c8dd6ef84.pnghttps://res.cloudinary.com/drnascc38/image/upload/v1767512306/28fbc34c-29f1-4a28-8a24-553a712be961.png",
   },
   {
     id: 100,
@@ -514,7 +515,7 @@ const galleryData = [
   {
     id: 103,
     name: "Headphone Bag",
-    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767019204/3405d137-93d9-45b7-9ac0-08a177787f3d.png",
+    url: "https://res.cloudinary.com/drnascc38/image/upload/v1767585061/1c4ef91d-5a40-4bce-9b48-86a2e49aff02.png",
   },
   {
     id: 105,

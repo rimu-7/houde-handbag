@@ -2,7 +2,7 @@ import { connectDB } from "@/lib/db";
 import Timeline from "@/lib/models/timeline";
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic"; // Ensure it doesn't cache stale data
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {

@@ -123,7 +123,7 @@ export default function CertificatesSection({ data, lang }) {
                 <motion.div animate={{ scale: zoom }} className="p-4">
                   <CldImage
                     src={openCert.image}
-                    alt={openCert.label}
+                    alt="Certificate"
                     width={1600}
                     height={2200}
                     className="max-h-[70vh] w-auto object-contain shadow-lg"
