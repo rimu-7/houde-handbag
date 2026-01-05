@@ -76,9 +76,9 @@ export const MasonryShuffleGallery = ({ items }) => {
                 <span className="text-white font-medium text-lg tracking-wide border border-white/20 bg-white/10 px-4 py-2 rounded-full">
                   {item.name}
                 </span>
-                <span className="text-white/70 text-sm">
+                {/* <span className="text-white/70 text-sm">
                   ID: {item.id}
-                </span>
+                </span> */}
               </div>
             </motion.div>
           ))}
