@@ -61,7 +61,7 @@ const LOCATIONS = {
     },
     address: {
       en: "HAUDE Co., Ltd. 288/1A, Binh Duong Avenue, Thanh Hoa B Town, An Thanh Ward, Thuan An City, Binh Duong Province, Vietnam",
-      zh: "越南平阳省顺安市安清坊平阳大道288/1A号 HAUDE有限公司",
+      zh: "HAUDE Co., Ltd. 288/1A, Binh Duong Avenue, Thanh Hoa B Town, An Thanh Ward, Thuan An City, Binh Duong Province, Vietnam",
     },
   },
 };
