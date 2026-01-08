@@ -49,7 +49,8 @@ export default function Navbar() {
           className="flex flex-col z-50"
         >
           <span className="font-bold text-lg hover:text-amber-700 hover:scale-110 duration-300 tracking-tight text-gray-900">
-            HOUDE HANDBAG
+            
+             {lang === "en" ? "HOUDE HANDBAG" : "厚德手提包"}
           </span>
           <span className="text-[10px] uppercase tracking-widest text-gray-500">
             {lang === "en" ? "Premium Goods" : "优质皮革制品"}

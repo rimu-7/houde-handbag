@@ -260,7 +260,7 @@ export default function ContactPage() {
                         <WeChatIcon className="w-5 h-5" />
                       </div>
                       <span className="font-semibold text-slate-700 group-hover:text-amber-700">
-                        WeChat
+                         {isEn ? "WeChat" : "微信"}
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 pl-1 flex items-center gap-1">

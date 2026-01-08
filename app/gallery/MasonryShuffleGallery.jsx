@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react"; // Assuming you have lucide-react, or use text
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useLanguage } from "@/components/LanguageProvider";
 
 const shuffleArray = (array) => {
   const newArray = [...array];
@@ -38,17 +39,20 @@ export const MasonryShuffleGallery = ({ items }) => {
   // Pagination Logic
   const totalPages = Math.ceil(shuffledItems.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentItems = shuffledItems.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentItems = shuffledItems.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
   };
+  const { lang, toggleLang } = useLanguage();
 
   return (
     <div className="p-4 md:p-8" ref={topRef}>
-      
       {/* Masonry Grid */}
       <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 min-h-[500px]">
         <AnimatePresence mode="wait">
@@ -70,11 +74,12 @@ export const MasonryShuffleGallery = ({ items }) => {
                 unoptimized={true}
                 className="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-110"
               />
-              
+
               {/* Overlay */}
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col gap-2 items-center justify-center backdrop-blur-[2px]">
                 <span className="text-white font-medium text-lg tracking-wide border border-white/20 bg-white/10 px-4 py-2 rounded-full">
-                  {item.name}
+                  {/* {item.name} */}
+                  {lang === "en" ? item.name : item.namecn}
                 </span>
                 {/* <span className="text-white/70 text-sm">
                   ID: {item.id}
