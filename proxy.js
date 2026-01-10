@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 
 export default function middleware(request) {
-  const allowedOrigins =
-    process.env.allowedOrigins ||
-    process.env.allowedOrigins2 ||
-    process.env.allowedOrigins3;
+  const allowedOrigins = [
+    "https://alpha-stack-log-coil.vercel.app",
+  ];
 
   const origin = request.headers.get("origin");
   const referer = request.headers.get("referer");
