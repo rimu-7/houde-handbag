@@ -47,7 +47,7 @@ const FOOTER_DATA = {
         phoneRaw2: "0789960888",
         phone: "+8613829146199",
         email: "houde.bag@shunbox.com",
-        email2: "houde.hu036@gmail.com",
+        email2: "farhan@houdebag.com",
       },
       newsletter: {
         title: "Get Updates",
@@ -91,7 +91,7 @@ const FOOTER_DATA = {
         phoneRaw2: "0789960888",
         phone: "13829146199",
         email: "houde.bag@shunbox.com",
-        email2: "houde.hu036@gmail.com",
+        email2: "farhan@houdebag.com",
       },
       newsletter: {
         title: "订阅更新",

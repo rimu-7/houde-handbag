@@ -73,7 +73,7 @@ export default function CertificatesSection({ data, lang }) {
                 <div className="absolute inset-0 p-3 sm:p-4">
                   <CldImage
                     src={c.image}
-                    alt={c.label}
+                    alt="kfjgk"
                     width={1600}
                     height={2200}
                     className="h-full w-full object-contain bg-white rounded-xl"

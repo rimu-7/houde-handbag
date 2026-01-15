@@ -149,7 +149,7 @@ const content = {
       { en: "T/T (Telegraphic transfer)", zh: "T/T（电汇）" },
       { en: "L/C", zh: "L/C（信用证）" },
       { en: "Western Union", zh: "Western Union（西联）" },
-      { en: "Paypal (only for sample)", zh: "Paypal（仅限样品费）" },
+      { en: "Alipay", zh: "支付宝" },
     ],
   },
   about: {
@@ -281,13 +281,13 @@ const polishedImages = {
     },
   ],
   materials: [
-    "https://res.cloudinary.com/drnascc38/image/upload/v1767074395/a642a63f-890c-413f-8227-06510700a1ac.png",
-    "https://res.cloudinary.com/drnascc38/image/upload/v1767074375/84761170-f03d-4a47-a8fb-423a0c7cac48.png",
-    "https://res.cloudinary.com/drnascc38/image/upload/v1767074289/249511a0-cf1e-44e6-85db-f7fa92b776cb.png",
-    "https://res.cloudinary.com/drnascc38/image/upload/v1767074305/b16c9dcd-acaf-47ad-8e76-d1e807911654.png",
+    "https://res.cloudinary.com/drnascc38/image/upload/v1768209487/f14efda2-8fb9-4160-b6ca-807ea4adaeee.png",
+    "https://res.cloudinary.com/drnascc38/image/upload/v1768207590/762cfbc5-6aaf-4c2c-a36b-37cffcb2d1a9.png",
+    "https://res.cloudinary.com/drnascc38/image/upload/v1768207543/3c6618b3-3e14-4304-b58f-ec9f5261d280.png",
+    "https://res.cloudinary.com/drnascc38/image/upload/v1768207480/af63dde4-0c06-4836-9511-68d65a64b29f.png",
   ],
   colors: [
-    "https://res.cloudinary.com/drnascc38/image/upload/v1767072437/d269cb1a-d74f-440a-8c94-693c6ab89270.png",
+    "https://res.cloudinary.com/drnascc38/image/upload/v1768209759/c8967d4c-f304-4c43-b7c7-8fe8f78e00cb.png",
   ],
   logo: [
     "https://images.unsplash.com/photo-1618942660270-495c15c94bb0?auto=format&fit=crop&q=80&w=1200", // Embossed leather
@@ -553,17 +553,20 @@ export default function BagManufacturerPage() {
             <p className="text-lg text-slate-600 mb-10 leading-relaxed">
               {t.colors.description[isEn ? "en" : "zh"]}
             </p>
-            <div className="grid grid-cols-1">
-              {polishedImages.colors.map((src, i) => (
-                <GridImage
-                  key={i}
+          </motion.div>
+          <div className="flex justify-center items-center h-fit">
+            {polishedImages.colors.map((src, i) => (
+              <div key={i} className="relative">
+                <Image
                   src={src}
                   alt={`Color palette ${i + 1}`}
-                  height="h-96"
+                  height={600}
+                  width={800}
+                  className="object-cover rounded-lg transition-transform duration-300 ease-in-out transform"
                 />
-              ))}
-            </div>
-          </motion.div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

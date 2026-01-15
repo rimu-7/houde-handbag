@@ -227,13 +227,13 @@ export default function ContactPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {/* WhatsApp */}
                   <a
-                    href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP}`}
+                    href={`https://wa.me/+8619823276069`}
                     target="_blank"
                     rel="noreferrer"
                     className="group p-4 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all flex flex-col justify-between"
                   >
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="bg-emerald-50 p-2 rounded-lg text-emerald-600">
+                      <div className="bg-green-100 p-2 rounded-lg text-emerald-600">
                         <WhatsAppIcon className="w-5 h-5" />
                       </div>
                       <span className="font-semibold text-slate-700 group-hover:text-emerald-700">
@@ -248,7 +248,7 @@ export default function ContactPage() {
                   {/* WeChat */}
                   <div
                     onClick={() => {
-                      navigator.clipboard.writeText("osksv");
+                      navigator.clipboard.writeText("H13829146199");
                       toast.success(
                         isEn ? "WeChat ID copied!" : "微信ID已复制!"
                       );
@@ -256,10 +256,10 @@ export default function ContactPage() {
                     className="cursor-pointer group p-4 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-amber-200 transition-all flex flex-col justify-between"
                   >
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="bg-amber-50 p-2 rounded-lg text-amber-600">
+                      <div className="bg-green-100 p-2 rounded-lg text-green-600">
                         <WeChatIcon className="w-5 h-5" />
                       </div>
-                      <span className="font-semibold text-slate-700 group-hover:text-amber-700">
+                      <span className="font-semibold text-slate-700 group-hover:text-green-600">
                          {isEn ? "WeChat" : "微信"}
                       </span>
                     </div>
@@ -271,7 +271,7 @@ export default function ContactPage() {
                 </div>
 
                 {/* Phone */}
-                <a href="tel:+8613829146199" className="block group">
+                <a href="tel:0769-85825562" className="block group">
                   <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-sky-200 transition-all flex items-center gap-4">
                     <div className="bg-sky-50 p-2.5 rounded-lg text-sky-600">
                       <Phone className="w-5 h-5" />
