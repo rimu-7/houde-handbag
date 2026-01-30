@@ -138,7 +138,7 @@ export default function GalleryPage() {
         <Separator className="mb-6" />
 
         {/* Sticky Filter Bar */}
-        <div className="sticky top-0 z-30 bg-white/90 dark:bg-black/90 backdrop-blur-md py-4 -mx-4 px-4 md:px-0 md:mx-0 mb-6 border-b border-transparent transition-all">
+        <div className="py-4 -mx-4 px-4 md:px-0 md:mx-0 mb-6 border-b border-transparent transition-all">
           <div className="flex flex-wrap justify-center items-center gap-2 py-2 overflow-x-auto scrollbar-hide">
             {isPageLoading
               ? Array.from({ length: 4 }).map((_, i) => (
